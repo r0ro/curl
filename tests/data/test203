@@ -25,7 +25,7 @@ file
 file:/path URL with a single slash
  </name>
 <command option="no-include">
-file:%PWD/log/test203.txt
+file:%POSIX_PWD/log/test203.txt
 </command>
 <file name="log/test203.txt">
 foo
