@@ -60,7 +60,7 @@ void Curl_resolver_global_cleanup(void);
  * Returning anything else than CURLE_OK fails curl_easy_init() with the
  * correspondent code.
  */
-CURLcode Curl_resolver_init(void **resolver);
+CURLcode Curl_resolver_init(struct Curl_easy *easy, void **resolver);
 
 /*
  * Curl_resolver_cleanup()
@@ -151,7 +151,7 @@ Curl_addrinfo *Curl_resolver_getaddrinfo(struct connectdata *conn,
 #define Curl_resolver_wait_resolv(x,y) CURLE_COULDNT_RESOLVE_HOST
 #define Curl_resolver_getsock(x,y,z) 0
 #define Curl_resolver_duphandle(x,y) CURLE_OK
-#define Curl_resolver_init(x) CURLE_OK
+#define Curl_resolver_init(x,y) CURLE_OK
 #define Curl_resolver_global_init() CURLE_OK
 #define Curl_resolver_global_cleanup() Curl_nop_stmt
 #define Curl_resolver_cleanup(x) Curl_nop_stmt

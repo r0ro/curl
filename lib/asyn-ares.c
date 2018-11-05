@@ -119,6 +119,21 @@ void Curl_resolver_global_cleanup(void)
 #endif
 }
 
+
+static void Curl_ares_sock_state_cb(void *data, ares_socket_t socket_fd,
+                                    int readable, int writable)
+{
+  struct Curl_easy *easy = data;
+  if(!readable && !writable) {
+    if(easy->easy_conn) {
+      Curl_multi_closed(easy->easy_conn, socket_fd);
+    }
+    else {
+      DEBUGASSERT(easy->easy_conn);
+    }
+  }
+}
+
 /*
  * Curl_resolver_init()
  *
@@ -126,9 +141,13 @@ void Curl_resolver_global_cleanup(void)
  * URL-state specific environment ('resolver' member of the UrlState
  * structure).  Fills the passed pointer by the initialized ares_channel.
  */
-CURLcode Curl_resolver_init(void **resolver)
+CURLcode Curl_resolver_init(struct Curl_easy *easy, void **resolver)
 {
-  int status = ares_init((ares_channel*)resolver);
+  struct ares_options options;
+  int optmask = ARES_OPT_SOCK_STATE_CB;
+  options.sock_state_cb = Curl_ares_sock_state_cb;
+  options.sock_state_cb_data = easy;
+  int status = ares_init_options((ares_channel*)resolver, &options, optmask);
   if(status != ARES_SUCCESS) {
     if(status == ARES_ENOMEM)
       return CURLE_OUT_OF_MEMORY;

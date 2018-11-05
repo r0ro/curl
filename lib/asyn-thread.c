@@ -108,7 +108,7 @@ void Curl_resolver_global_cleanup(void)
  * URL-state specific environment ('resolver' member of the UrlState
  * structure).
  */
-CURLcode Curl_resolver_init(void **resolver)
+CURLcode Curl_resolver_init(struct Curl_easy *easy, void **resolver)
 {
   *resolver = calloc(1, sizeof(struct resdata));
   if(!*resolver)
@@ -135,7 +135,7 @@ void Curl_resolver_cleanup(void *resolver)
 int Curl_resolver_duphandle(void **to, void *from)
 {
   (void)from;
-  return Curl_resolver_init(to);
+  return Curl_resolver_init(NULL, to);
 }
 
 static void destroy_async_data(struct Curl_async *);
